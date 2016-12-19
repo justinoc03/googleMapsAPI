@@ -25,7 +25,6 @@ var initMap = function(){
 
 
    var largeInfowindow = new google.maps.InfoWindow();
-   var bounds = new google.maps.LatLngBounds();
 
    for (var i = 0; i < locations.length; i++) {
     //  console.log('locations[i]', locations[i]);
@@ -41,8 +40,6 @@ var initMap = function(){
        id: i
      });
      markers.push(marker);
-     //extend the bounds of the map to encompass any new markers
-     bounds.extend(marker.position);
 
      //create an onclick event to open an infowindow at each marker
      marker.addListener('click', function(){
@@ -50,7 +47,10 @@ var initMap = function(){
      });
    }
 
-  map.fitBounds(bounds);
+  document.getElementById('show-listings').addEventListener('click', showListings);
+  document.getElementById('hide-listings').addEventListener('click', hideListings);
+}; //end initMap function
+
 
   //This function populates the infowindow when the marker is clicked
   function populateInfoWindow(marker, infowindow) {
@@ -66,4 +66,21 @@ var initMap = function(){
     }
   }
 
-}; //end initMap function
+  // This function will loop through the markers array and display them 
+      function showListings() {
+        var bounds = new google.maps.LatLngBounds();
+        // Extend the boundaries of the map for each marker and display the marker
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(map);
+          bounds.extend(markers[i].position);
+        }
+        map.fitBounds(bounds);
+      }
+
+      // This function will loop through the listings and hide them all.
+     function hideListings() {
+       for (var i = 0; i < markers.length; i++) {
+         //null hides the markers, not deleting them
+         markers[i].setMap(null);
+       }
+     }
