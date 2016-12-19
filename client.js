@@ -10,7 +10,9 @@ function initMap(){
     center: {lat: 44.9396470, lng: -93.1384840},
     zoom: 13
   });
+  //add a marker via lat/lng
   var grandAve = {lat: 44.9396470, lng: -93.1384840};
+  //create object for marker and use a new marker constructor to display marker on map
   var marker = new google.maps.Marker({
     position: grandAve,
     map: map,
