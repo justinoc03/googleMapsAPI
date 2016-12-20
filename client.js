@@ -6,7 +6,7 @@ var markers = [];
 //initMap function is called on startup to create map and center it on St. Paul
 var initMap = function(){
   console.log("in initMap");
-  // Constructor creates a new map - only center and zoom are required.
+  // Constructor object creates a new map - only center and zoom are required.
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 44.9396470, lng: -93.1384840},
     zoom: 13
@@ -23,7 +23,7 @@ var initMap = function(){
      {title: 'Chinatown Homey Space', location: {lat: 40.7180628, lng: -73.9961237}}
    ];
 
-
+   //constructor object
    var largeInfowindow = new google.maps.InfoWindow();
 
    for (var i = 0; i < locations.length; i++) {
@@ -36,7 +36,7 @@ var initMap = function(){
        map: map,
        position: position,
        title: title,
-       animation: google.maps.Animation.Drop,
+       animation: google.maps.Animation.DROP,
        id: i
      });
      markers.push(marker);
@@ -45,6 +45,11 @@ var initMap = function(){
      marker.addListener('click', function(){
        populateInfoWindow(this, largeInfowindow);
      });
+
+     marker.addListener('click', function(){
+       bounceAnimation(this);
+     });
+
    }
       console.log(markers);
 
@@ -52,36 +57,48 @@ var initMap = function(){
   document.getElementById('hide-listings').addEventListener('click', hideListings);
 }; //end initMap function
 
-
-  //populateInfoWindow populates the infowindow with info when the marker is clicked
-  function populateInfoWindow(marker, infowindow) {
-    //check to make sure hte infowindow is not already opened on this marker
-    if(infowindow.marker != marker){
-      infowindow.marker = marker;
-      infowindow.setContent('<div>' + marker.title + '</div>' + '<div>' + marker.position + '</div>');
-      infowindow.open(map, marker);
-      //make sure the marker property is cleared if the infowindow is closed
-      infowindow.addListener('closeclick', function(){
-        infowindow.setMarker(null);
-      });
+function bounceAnimation(marker) {
+    if (marker.getAnimation() !== null) {
+        marker.setAnimation(null);
+    } else {
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+        setTimeout(function() {
+            marker.setAnimation(null);
+        }, 1400);
     }
+}
+
+//populateInfoWindow populates the infowindow with info when the marker is clicked
+function populateInfoWindow(marker, infowindow) {
+  //check to make sure hte infowindow is not already opened on this marker
+  if(infowindow.marker != marker){
+    infowindow.marker = marker;
+    infowindow.setContent('<div>' + marker.title + '</div>' + '<div>' + marker.position + '</div>');
+    infowindow.open(map, marker);
+    //make sure the marker property is cleared if the infowindow is closed
+    infowindow.addListener('closeclick', function(){
+      infowindow.marker(null);
+    });
   }
+}
 
-  // This function will loop through the markers array and display them
-      function showListings() {
-        var bounds = new google.maps.LatLngBounds();
-        // Extend the boundaries of the map for each marker and display the marker
-        for (var i = 0; i < markers.length; i++) {
-          markers[i].setMap(map);
-          bounds.extend(markers[i].position);
-        }
-        map.fitBounds(bounds);
-      }
+// This function will loop through the markers array and display them
+function showListings() {
+  //create new bounds within map
+  var bounds = new google.maps.LatLngBounds();
+  // Extend the boundaries of the map for each marker and display the marker on our current map
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+    bounds.extend(markers[i].position);
+  }
+  //fit the new bounds for our new positions
+  map.fitBounds(bounds);
+}
 
-      // This function will loop through the listings and hide them all.
-     function hideListings() {
-       for (var i = 0; i < markers.length; i++) {
-         //null hides the markers, not deleting them
-         markers[i].setMap(null);
-       }
-     }
+// This function will loop through the listings and hide them all.
+function hideListings() {
+ for (var i = 0; i < markers.length; i++) {
+   //null hides the markers, not deleting them
+   markers[i].setMap(null);
+ }
+}
