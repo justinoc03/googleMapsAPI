@@ -57,6 +57,7 @@ var initMap = function(){
   document.getElementById('hide-listings').addEventListener('click', hideListings);
 }; //end initMap function
 
+/////////bounceAnimation function/////////////
 function bounceAnimation(marker) {
     if (marker.getAnimation() !== null) {
         marker.setAnimation(null);
@@ -68,6 +69,7 @@ function bounceAnimation(marker) {
     }
 }
 
+/////////populateInfoWindow function/////////////
 //populateInfoWindow populates the infowindow with info when the marker is clicked
 function populateInfoWindow(marker, infowindow) {
   //check to make sure hte infowindow is not already opened on this marker
@@ -82,6 +84,7 @@ function populateInfoWindow(marker, infowindow) {
   }
 }
 
+/////////showListings function/////////////
 // This function will loop through the markers array and display them
 function showListings() {
   //create new bounds within map
@@ -95,6 +98,7 @@ function showListings() {
   map.fitBounds(bounds);
 }
 
+/////////hideListings function/////////////
 // This function will loop through the listings and hide them all.
 function hideListings() {
  for (var i = 0; i < markers.length; i++) {
